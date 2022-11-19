@@ -1,0 +1,197 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//zh-Hant">
+<html>
+  <head>
+  <meta http-equiv="content-type" content="text/html charset="utf-8">
+  <title>碧藍檔案傷害計算機</title>
+  </head>
+  <body>
+	<div class="Data-Content">
+    <div class="Data-Title">
+        <div class="AlignRight">
+            <label for="Atk">面板攻擊力</label><br />
+            <label for="EquAtk">裝備攻擊%</label><br />
+            <label for="SPAtk">支援攻擊力</label><br />
+            <!--<label for="Star2Atk">專2攻擊力</label><br />-->
+			<label for="AtkBuff">攻擊力Buff%</label><br />
+			<label for="SkillDmg">技能倍率%</label><br />
+			<label for="LevelCorrection">等級補正</label><br />
+			<label for="CrtDmgEqu">會心傷害裝備</label><br />
+			<label for="CrtDmgBuff">會心傷害buff%</label><br />
+			<label for="CrtDmgRes">會心傷害抵抗%</label><br />
+			<label for="Stable">安定值</label><br />
+			<label for="BossDef">BOSS防禦</label><br />
+			<label for="DefReduce">防禦Debuff%</label><br />
+        </div>
+    </div>
+    <div class="Data-Items">
+        <input type="text" id="Atk" value=6538 /><br />
+        <input type="text" id="EquAtk" value=40 /><br />
+        <input type="text" id="SPAtk" value=670 /><br />
+        <!--<input type="text" id="Star2Atk" value=0 /><br />-->
+		<input type="text" id="AtkBuff" value=0 /><br />		
+		<input type="text" id="SkillDmg" value=666 /><br />
+		<input type="text" id="LevelCorrection" value=1 /><br />
+		<input type="text" id="CrtDmgEqu" value=3600 /><br />
+		<input type="text" id="CrtDmgBuff" value=0 /><br />
+		<input type="text" id="CrtDmgRes" value=50 /><br />
+		<input type="text" id="Stable" value=2056 /><br />
+		<input type="text" id="BossDef" value=120 /><br />
+		<input type="text" id="DefReduce" value=0 /><br />
+    </div>
+	</div>
+    <div>
+      <input type="checkbox" id="Ehnatk" name="2技攻擊強化" value=26.6>
+      <label for="2技攻擊強化">2技攻擊強化 26.6%</label>
+    </div>
+	<div>
+      <input type="checkbox" id="atkAura" name="攻擊光環" value=17.3>
+      <label for="攻擊光環">攻擊光環 17.3%</label>
+    </div>
+	<div>
+      <input type="checkbox" id="kotamaAtkBuff" name="小玉攻擊BUFF" value=47.4>
+      <label for="小玉攻擊BUFF">小玉攻擊BUFF 47.4%</label>
+    </div>
+	<div>
+      <input type="checkbox" id="akoCrtDmgBuff" name="亞子爆傷BUFF" value=73.3>
+      <label for="亞子爆傷BUFF">亞子爆傷BUFF 73.3%</label>
+    </div>
+	<div>
+      <input type="checkbox" id="newAtkBuff" name="天才美少女攻擊BUFF" value=105>
+      <label for="天才美少女攻擊BUFF">天才美少女攻擊BUFF 105%</label>
+    </div>
+	<div>
+      <input type="checkbox" id="EhnCrtDmg" name="2技爆傷強化" value=26.6>
+      <label for="2技爆傷強化">2技爆傷強化 26.6%</label>
+    </div>
+	<div>
+      <input type="checkbox" id="CrtDmgAura" name="爆傷光環" value=17.3>
+      <label for="爆傷光環">爆傷光環 17.3%</label>
+    </div>
+	<select id="weak">
+    <option selected disabled>屬性補正</option>
+    <option value=0.5>抵抗 0.5</option>
+    <option value=1>普通 1</option>
+    <option value=2 selected>弱點 2</option>
+	</select><br>
+	
+	<select id="terrain">
+    <option selected disabled>地形補正</option>
+	<option value=0.8>大紅臉 0.8</option>
+    <option value=0.9>紅臉 0.9</option>
+    <option value=1.0>黃臉 10=.0</option>
+    <option value=1.1>綠臉 1.1</option>
+	<option value=1.2>大綠臉 1.2</option>
+	<option value=1.3 selected>墨鏡 1.3</option>
+	</select><br>
+	<div class="Calculator">
+	<button type="button" style="background-color: yellow;" onClick="CalculatorDmg()">計算傷害</button><br>
+	</div>
+	<div class="Damage">
+	<span>普通傷害:&ensp;&ensp;&ensp;&ensp;</span> <span id="normal_dmg"></span><br>	
+	<span>最低普通傷害:</span> <span id="normal_dmg_min"></span><br>
+	<span>爆擊傷害:&ensp;&ensp;&ensp;&ensp;</span> <span id="critical_dmg"></span><br>
+	<span>最低爆擊傷害:</span> <span id="critical_dmg_min"></span><br>
+	</div>
+  </body>
+  <style type="text/css">
+    .Data-Content {
+        width: 100%; /* 表單寬度 */
+        line-height: 21px;
+    }
+
+    .Data-Title {
+        float: left;
+        width: 35%; /* Label寬度，視情況調整 */
+        margin-right: 20px;
+    }
+
+    .Data-Items {
+        float: left;
+        width: 16%;
+    }
+
+    .AlignRight {
+        text-align: right;
+    }
+	
+	.Calculator {
+		width: 30%; 
+		margin-left: 450px;
+		margin-top: 100px;
+	}
+	
+	.Damage {	
+		width: 40%;
+		float: left;
+		text-align: left;
+		margin-left: 350px;
+	}
+</style>
+<script >
+function CalculatorDmg() {
+	var myselect=document.getElementById("weak");
+	var index=myselect.selectedIndex;
+	var weak = parseFloat(myselect.options[index].value);
+	myselect=document.getElementById("terrain");
+	index=myselect.selectedIndex;
+	var terrain = parseFloat(myselect.options[index].value);
+	var Atk = parseFloat(document.getElementById("Atk").value);
+	var EquAtk = parseFloat(document.getElementById("EquAtk").value / 100);
+	var SPAtk = parseFloat(document.getElementById("SPAtk").value);
+	var AtkBuff = parseFloat(document.getElementById("AtkBuff").value / 100);
+	//var Star2Atk = parseFloat(document.getElementById("Star2Atk").value);
+	var SkillDmg = parseFloat(document.getElementById("SkillDmg").value / 100) ;	
+	var LevelCorrection = document.getElementById("LevelCorrection").value;
+	var CrtDmgEqu = parseFloat(document.getElementById("CrtDmgEqu").value / 100);
+	var CrtDmgBuff = parseFloat(document.getElementById("CrtDmgBuff").value / 100);
+	var CrtDmgRes = parseFloat(document.getElementById("CrtDmgRes").value / 100);
+	var Stable = parseFloat(document.getElementById("Stable").value);
+	Stable = Stable / (1000 + Stable) + 0.2;
+	var DefReduce = parseFloat(document.getElementById("DefReduce").value / 100);
+	var BossDef = parseFloat(document.getElementById("BossDef").value);
+	BossDef = BossDef * (1 - DefReduce);
+	var atkAura = 0;
+	var Ehnatk = 0;
+	var kotamaAtkBuff = 0;
+	var akoCrtDmgBuff = 0;
+	var newAtkBuff = 0;
+	var EhnCrtDmg = 0;
+	var CrtDmgAura = 0;
+	if (document.getElementById("atkAura").checked) {
+		atkAura = parseFloat(document.getElementById("atkAura").value / 100);
+	}
+	if (document.getElementById("Ehnatk").checked) {
+		Ehnatk = parseFloat(document.getElementById("Ehnatk").value / 100);
+	}
+	if (document.getElementById("kotamaAtkBuff").checked) {
+		kotamaAtkBuff = parseFloat(document.getElementById("kotamaAtkBuff").value / 100);
+	} 
+	if (document.getElementById("akoCrtDmgBuff").checked) {
+		akoCrtDmgBuff = parseFloat(document.getElementById("akoCrtDmgBuff").value / 100);
+	}
+	if (document.getElementById("newAtkBuff").checked) {
+		newAtkBuff = parseFloat(document.getElementById("newAtkBuff").value / 100);
+	}
+	if (document.getElementById("EhnCrtDmg").checked) {
+		EhnCrtDmg = parseFloat(document.getElementById("EhnCrtDmg").value / 100);
+	}  
+	if (document.getElementById("CrtDmgAura").checked) {
+		CrtDmgAura = parseFloat(document.getElementById("CrtDmgAura").value / 100);
+	}	
+		
+	var totalAtk = (Atk / (1 + EquAtk) + SPAtk) *  (1 + (AtkBuff + EquAtk + atkAura + Ehnatk + kotamaAtkBuff + newAtkBuff));
+	var totalDmg = totalAtk * SkillDmg * LevelCorrection * weak * terrain;
+	var dmgReduce = (BossDef + 1666.66) / 1666.66;
+	var actualDmg = parseInt(totalDmg / dmgReduce);
+	var actualDmgMin = parseInt(totalDmg * Stable / dmgReduce);
+	var crtDmgRate = ((200 + CrtDmgEqu) / 100) * (1 + CrtDmgBuff + akoCrtDmgBuff + EhnCrtDmg + CrtDmgAura) - CrtDmgRes;
+	var crtDmg = parseInt(crtDmgRate * actualDmg);
+	var crtDmgMin = parseInt(actualDmgMin * crtDmgRate);
+	
+	document.getElementById("normal_dmg").innerHTML = actualDmg;
+	document.getElementById("normal_dmg_min").innerHTML = actualDmgMin;
+	document.getElementById("critical_dmg").innerHTML = crtDmg;
+	document.getElementById("critical_dmg_min").innerHTML = crtDmgMin;
+}
+</script>
+</html>
