@@ -97,17 +97,17 @@
 	</div>
   
   <style type="text/css">
+    .Data-Content {        
+	width: auto;        
+	margin-left: 28%;
+    }
+   
+    @media screen and (max-width: 720px) and (orientation: portrait) {
 	.Data-Content {        
 		width: auto;        
-		margin-left: 5%;
+		margin-left: 2%;			
 	}
-    
-	@media screen and (min-width: 720px) {
-		.Data-Content {        
-			width: auto;        
-			margin-left: 28%;
-		}
-	}
+    }
 
     .Data-Title {
         float: left;
@@ -123,25 +123,26 @@
 	.Data-buff {
         position: relative;
 		left: 20px;
+		white-space:nowrap;
     }
 
     .AlignRight {
         text-align: right;
     }
 	
-	.Calculator {
-		clear:both;
-		width: 30%; 
-		margin-left: 45%;
-		margin-top: 100px;
-	}
+    .Calculator {
+	clear:both;
+	width: 30%; 
+	margin-left: 45%;
+	margin-top: 100px;
+    }
 	
-	.Damage {	
-		width: 40%;
-		float: left;
-		text-align: left;
-		margin-left: 32%;
-	}
+    .Damage {	
+	width: 40%;
+	float: left;
+	text-align: left;
+	margin-left: 32%;
+    }
 </style>
 <script>
 function CalculatorDmg() {
