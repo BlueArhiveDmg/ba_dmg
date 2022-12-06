@@ -55,7 +55,7 @@
 				<input type="text" id="AtkBuff" value="0" onchange="CalculatorDmg()"><br>		
 				<input type="text" id="SkillDmg" value="666" onchange="CalculatorDmg()"><br>
 				<input type="text" id="LevelCorrection" value="1" onchange="CalculatorDmg()"><br>
-				<input type="text" id="CrtDmgEqu" value="3600" onchange="CalculatorDmg()"><br>
+				<input type="text" id="CrtDmgEqu" value="3900" onchange="CalculatorDmg()"><br>
 				<input type="text" id="CrtDmgBuff" value="0" onchange="CalculatorDmg()"><br>
 				<input type="text" id="CrtDmgRes" value="50" onchange="CalculatorDmg()"><br>
 				<input type="text" id="Stable" value="2056" onchange="CalculatorDmg()"><br>
@@ -176,9 +176,23 @@
 	}
 </style>
 <script>
+class studentStat {
+  attack = 4144.41;
+  WeaponAttack = 422;
+  EquHead = "Hat";
+  EquAcc = "Watch";
+  ExSkill = 666;
+  CriticalDamage = 200;
+  Stability = 2056
+  constructor() {
+  }
+};
+var student = new studentStat();
 var CharLevel = 83;
 var CharacterList;
 var star = 4;
+var EquAtkKey = { "Hat": 40, "Gloves" : 35, "Shoes": 30};
+var EquCrtDmgKey = { "Hat": 1800, "Gloves": 0, "Shoes": 0, "Watch":2100, "Charm":0, "Necklace":0};
 transcendence = [[0, 1000, 2200, 3600, 5300], [0, 750, 1750, 2950, 4450], [0, 500, 1200, 2100, 3500]]
 starGradeStr = ["1 star", "2 star", "3 star", "4 star", "5 star", "Weapon 1", "Weapon 2", "Weapon 3"]
 function updateStarGrade(val)
@@ -207,7 +221,7 @@ function CharacterStatUpdate(idx)
 	if (idx < 0) {
 		return 0;
 	}
-	
+
 	textarea = document.getElementById('characterStat');
 	textarea.value = '';
 	textarea.value += "Name:" + CharacterList[idx].Name + '\n';
@@ -215,18 +229,32 @@ function CharacterStatUpdate(idx)
 	attack = CharacterList[idx].AttackPower1 + attack * (level - 1);
 	attack = attack * (1 + transcendence[0][star] / 10000);  
 	textarea.value += "Attack:" + (attack).toFixed(2) + '\n';
-	attack = (CharacterList[idx].Weapon.AttackPower100 - CharacterList[idx].Weapon.AttackPower1) / 100;
-	textarea.value += "WeaponAttack:" + (attack * weaponLevel).toFixed(2) + '\n';
+	student.attack = parseFloat((attack).toFixed(2));
+	attack = (CharacterList[idx].Weapon.AttackPower100 - CharacterList[idx].Weapon.AttackPower1) / 99;
+	attack = CharacterList[idx].Weapon.AttackPower1 + (attack).toFixed(2) * (weaponLevel - 1);
+	student.WeaponAttack = parseFloat((attack).toFixed(2));
+	textarea.value += "WeaponAttack:" + (attack).toFixed(2) + '\n';
 	textarea.value += "CriticalDamage:" + CharacterList[idx].CriticalDamageRate / 100 + '%\n';
+	student.CriticalDamage = CharacterList[idx].CriticalDamageRate / 100;
 	textarea.value += "StabilityPoint:" + CharacterList[idx].StabilityPoint + '\n';
+	student.Stability = CharacterList[idx].StabilityPoint;
 	textarea.value += "Equipment Head:" + CharacterList[idx].Equipment[0] + '\n';
+	student.EquHead = CharacterList[idx].Equipment[0];
 	textarea.value += "Equipment Accessory:" + CharacterList[idx].Equipment[2] + '\n';
+	student.EquAcc = CharacterList[idx].Equipment[2];
 	textarea.value += "EX skill:" ;
 	for(var x = 0; x < CharacterList[idx].Skills[0].Parameters.length; x++){ 
 		if (CharacterList[idx].Skills[0].Parameters[x][4].indexOf("%") > 0)
 		textarea.value += CharacterList[idx].Skills[0].Parameters[x][4] + " ";
 	}
-
+	student.ExSkill = parseFloat(CharacterList[idx].Skills[0].Parameters[0][4].replace("%",""));
+	
+	document.getElementById("EquAtk").value = EquAtkKey[student.EquHead];
+	document.getElementById("CrtDmgEqu").value = EquCrtDmgKey[student.EquHead] + EquCrtDmgKey[student.EquAcc];
+	document.getElementById("Atk").value = ((student.attack + student.WeaponAttack) * (1 + document.getElementById("EquAtk").value / 100)).toFixed(2);
+	document.getElementById("SkillDmg").value = student.ExSkill;
+	document.getElementById("Stable").value = student.Stability;
+	CalculatorDmg();
 }
 
 function CharacterSelect(e)
@@ -263,7 +291,9 @@ function getJson() {
 			CharacterList = output;
 			createCharacterList(CharacterList);
 			
-		}).catch(err => console.error(err));
+	}).catch(err => console.error(err));
+	
+	//fetch('https://lonqie.github.io/SchaleDB/data/summons.json')
 }
 function CalculatorDmg() {
 	var myselect=document.getElementById("weak");
@@ -321,7 +351,7 @@ function CalculatorDmg() {
 	var dmgReduce = (BossDef + 1666.66) / 1666.66;
 	var actualDmg = parseInt(totalDmg / dmgReduce);
 	var actualDmgMin = parseInt(totalDmg * Stable / dmgReduce);
-	var crtDmgRate = ((200 + CrtDmgEqu) / 100) * (1 + CrtDmgBuff + akoCrtDmgBuff + EhnCrtDmg + CrtDmgAura) - CrtDmgRes;
+	var crtDmgRate = ((student.CriticalDamage + CrtDmgEqu) / 100) * (1 + CrtDmgBuff + akoCrtDmgBuff + EhnCrtDmg + CrtDmgAura) - CrtDmgRes;
 	var crtDmg = parseInt(crtDmgRate * actualDmg);
 	var crtDmgMin = parseInt(actualDmgMin * crtDmgRate);
 	
@@ -332,6 +362,9 @@ function CalculatorDmg() {
 }
 window.onload = function() {
 	getJson();
+	document.getElementById("EquAtk").value = EquAtkKey[student.EquHead];
+	document.getElementById("CrtDmgEqu").value = EquCrtDmgKey[student.EquHead] + EquCrtDmgKey[student.EquAcc];
+	document.getElementById("Atk").value = ((student.attack + student.WeaponAttack) * (1 + document.getElementById("EquAtk").value / 100)).toFixed(2);
 	CalculatorDmg();
 }
 </script>
