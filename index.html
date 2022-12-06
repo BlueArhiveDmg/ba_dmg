@@ -213,6 +213,22 @@ function updateCharLevel(val)
 	CharacterStatUpdate(idx);
 }
 
+function getSkillText(text, params, level) {
+    
+    let result = text
+    let regex
+
+    regex = /[0-9.]+(?:%|s|秒|초| วินาที)/g
+    result = result.replace(regex, function(match) {return `<strong>${match}</strong>`})
+
+    for (let i = 1; i <= params.length; i++) {
+        while (result.includes(`<?${i}>`)) {
+            result = result.replace(`<?${i}>`, `${params[i-1][level]}`)
+        }
+    }
+
+	return result
+}
 function CharacterStatUpdate(idx)
 {
 	var attack = 0;
@@ -242,11 +258,8 @@ function CharacterStatUpdate(idx)
 	student.EquHead = CharacterList[idx].Equipment[0];
 	textarea.value += "Equipment Accessory:" + CharacterList[idx].Equipment[2] + '\n';
 	student.EquAcc = CharacterList[idx].Equipment[2];
-	textarea.value += "EX skill:" ;
-	for(var x = 0; x < CharacterList[idx].Skills[0].Parameters.length; x++){ 
-		if (CharacterList[idx].Skills[0].Parameters[x][4].indexOf("%") > 0)
-		textarea.value += CharacterList[idx].Skills[0].Parameters[x][4] + " ";
-	}
+	textarea.value += "EX skill:" + "\n" ;
+	textarea.value += getSkillText(CharacterList[idx].Skills[0].Desc, CharacterList[idx].Skills[0].Parameters, 4);
 	student.ExSkill = parseFloat(CharacterList[idx].Skills[0].Parameters[0][4].replace("%",""));
 	
 	document.getElementById("EquAtk").value = EquAtkKey[student.EquHead];
