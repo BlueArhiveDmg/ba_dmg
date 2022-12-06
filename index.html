@@ -1,81 +1,107 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//zh-Hant">
-<!-- saved from url=(0039)https://bluearhivedmg.github.io/ba_dmg/ -->
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta http-equiv="content-type" content="text/html charset=" utf-8"="">
-  <title>碧藍檔案傷害計算機</title>
-  </head>
-  <body data-new-gr-c-s-check-loaded="14.1087.0" data-gr-ext-installed="">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<title>碧藍檔案傷害計算機</title>
+</head>
+	<body>
+	<div class="CharStatDiv">
+		<div>
+			<div>
+				<input type="range" id="charLevel" value="83" min="1" max="100" 
+				oninput="updateCharLevel(this.value);">
+				<input style="width:2em" type="text" id="charLevelText" value="83" 
+				oninput="updateCharLevel(this.value);">
+				<output style="width:2em" type="text">Level</output>
+			</div>
+			<div>
+				<input type="range" id="starGrade" value="5" min="1" max="8" 
+				oninput="updateStarGrade(this.value);">
+				<input style="width:2em" type="text" id="charStarGradeText" value="5"
+				oninput="updateStarGrade(this.value);">
+				<output style="width:2em" type="text" id="StarGradeString">5 star</output>
+			</div>
+		</div>
+		<div>
+			<!-- <button onclick="getJson()">Get list</button> -->
+			<select name="character" id="character"> 
+			<option value="-1" selected="" disabled="">character</option> 
+			</select> 
+		</div>	
+		<textarea id="characterStat" name="characterStat" rows="10" cols="30"></textarea>	
+	</div>
 	<div class="Data-Content">
-    <div class="Data-Title">
-        <div class="AlignRight">
-            <label for="Atk">面板攻擊力</label><br>
-            <label for="EquAtk">裝備攻擊%</label><br>
-            <label for="SPAtk">支援攻擊力</label><br>
-            <!--<label for="Star2Atk">專2攻擊力</label><br />-->
-			<label for="AtkBuff">攻擊力Buff%</label><br>
-			<label for="SkillDmg">技能倍率%</label><br>
-			<label for="LevelCorrection">等級補正</label><br>
-			<label for="CrtDmgEqu">會心傷害裝備</label><br>
-			<label for="CrtDmgBuff">會心傷害buff%</label><br>
-			<label for="CrtDmgRes">會心傷害抵抗%</label><br>
-			<label for="Stable">安定值</label><br>
-			<label for="BossDef">BOSS防禦</label><br>
-			<label for="DefReduce">防禦Debuff%</label><br>
-        </div>
-    </div>
-    <div class="Data-Items">
-        <input type="text" id="Atk" value="6538"><br>
-        <input type="text" id="EquAtk" value="40"><br>
-        <input type="text" id="SPAtk" value="670"><br>
-        <!--<input type="text" id="Star2Atk" value=0 /><br />-->
-		<input type="text" id="AtkBuff" value="0"><br>		
-		<input type="text" id="SkillDmg" value="666"><br>
-		<input type="text" id="LevelCorrection" value="1"><br>
-		<input type="text" id="CrtDmgEqu" value="3600"><br>
-		<input type="text" id="CrtDmgBuff" value="0"><br>
-		<input type="text" id="CrtDmgRes" value="50"><br>
-		<input type="text" id="Stable" value="2056"><br>
-		<input type="text" id="BossDef" value="120"><br>
-		<input type="text" id="DefReduce" value="0"><br>
-    </div>
+			<div class="Data-Title">
+				<label for="Atk">面板攻擊力</label><br>
+				<label for="EquAtk">裝備攻擊%</label><br>
+				<label for="SPAtk">支援攻擊力</label><br>
+				<!--<label for="Star2Atk">專2攻擊力</label><br />-->
+				<label for="AtkBuff">攻擊力Buff%</label><br>
+				<label for="SkillDmg">技能倍率%</label><br>
+				<label for="LevelCorrection">等級補正</label><br>
+				<label for="CrtDmgEqu">會心傷害裝備</label><br>
+				<label for="CrtDmgBuff">會心傷害buff%</label><br>
+				<label for="CrtDmgRes">會心傷害抵抗%</label><br>
+				<label for="Stable">安定值</label><br>
+				<label for="BossDef">BOSS防禦</label><br>
+				<label for="DefReduce">防禦Debuff%</label><br>
+			</div>
+			<div class="Data-Items">
+				<input type="text" id="Atk" value="6538" onchange="CalculatorDmg()"><br>
+				<input type="text" id="EquAtk" value="40" onchange="CalculatorDmg()"><br>
+				<input type="text" id="SPAtk" value="670" onchange="CalculatorDmg()"><br>
+				<!--<input type="text" id="Star2Atk" value=0 /><br />-->
+				<input type="text" id="AtkBuff" value="0" onchange="CalculatorDmg()"><br>		
+				<input type="text" id="SkillDmg" value="666" onchange="CalculatorDmg()"><br>
+				<input type="text" id="LevelCorrection" value="1" onchange="CalculatorDmg()"><br>
+				<input type="text" id="CrtDmgEqu" value="3600" onchange="CalculatorDmg()"><br>
+				<input type="text" id="CrtDmgBuff" value="0" onchange="CalculatorDmg()"><br>
+				<input type="text" id="CrtDmgRes" value="50" onchange="CalculatorDmg()"><br>
+				<input type="text" id="Stable" value="2056" onchange="CalculatorDmg()"><br>
+				<input type="text" id="BossDef" value="120" onchange="CalculatorDmg()"><br>
+				<input type="text" id="DefReduce" value="0" onchange="CalculatorDmg()"><br>
+			</div>
 	</div>
 	<div class="Data-buff">
 		<div>
-		  <input type="checkbox" id="Ehnatk" name="2技攻擊強化" value="26.6">
+		  <input type="checkbox" id="Ehnatk" name="2技攻擊強化" value="26.6" onchange="CalculatorDmg()">
 		  <label for="2技攻擊強化">2技攻擊強化 26.6%</label>
 		</div>
 		<div>
-		  <input type="checkbox" id="atkAura" name="攻擊光環" value="17.3">
+		  <input type="checkbox" id="atkAura" name="攻擊光環" value="17.3" onchange="CalculatorDmg()">
 		  <label for="攻擊光環">攻擊光環 17.3%</label>
 		</div>
 		<div>
-		  <input type="checkbox" id="kotamaAtkBuff" name="小玉攻擊BUFF" value="47.4">
+		  <input type="checkbox" id="kotamaAtkBuff" name="小玉攻擊BUFF" value="47.4" onchange="CalculatorDmg()">
 		  <label for="小玉攻擊BUFF">小玉攻擊BUFF 47.4%</label>
 		</div>
 		<div>
-		  <input type="checkbox" id="akoCrtDmgBuff" name="亞子爆傷BUFF" value="73.3">
+		  <input type="checkbox" id="akoCrtDmgBuff" name="亞子爆傷BUFF" value="73.3" onchange="CalculatorDmg()">
 		  <label for="亞子爆傷BUFF">亞子爆傷BUFF 73.3%</label>
 		</div>
 		<div>
-		  <input type="checkbox" id="newAtkBuff" name="天才美少女攻擊BUFF" value="105">
+		  <input type="checkbox" id="newAtkBuff" name="天才美少女攻擊BUFF" value="105" onchange="CalculatorDmg()">
 		  <label for="天才美少女攻擊BUFF">天才美少女攻擊BUFF 105%</label>
 		</div>
 		<div>
-		  <input type="checkbox" id="EhnCrtDmg" name="2技爆傷強化" value="26.6">
+		  <input type="checkbox" id="EhnCrtDmg" name="2技爆傷強化" value="26.6" onchange="CalculatorDmg()">
 		  <label for="2技爆傷強化">2技爆傷強化 26.6%</label>
 		</div>
 		<div>
-		  <input type="checkbox" id="CrtDmgAura" name="爆傷光環" value="17.3">
+		  <input type="checkbox" id="CrtDmgAura" name="爆傷光環" value="17.3" onchange="CalculatorDmg()">
 		  <label for="爆傷光環">爆傷光環 17.3%</label>
 		</div>
-		<select id="weak">
+		<div>
+		<select id="weak"  onchange="CalculatorDmg()">
 			<option selected="" disabled="">屬性補正</option>
 			<option value="0.5">抵抗 0.5</option>
 			<option value="1">普通 1</option>
 			<option value="2" selected="">弱點 2</option>
 		</select><br>
-	
-		<select id="terrain">
+		</div>
+		<div>
+		<select id="terrain" onchange="CalculatorDmg()">
 			<option selected="" disabled="">地形補正</option>
 			<option value="0.8">大紅臉 0.8</option>
 			<option value="0.9">紅臉 0.9</option>
@@ -84,66 +110,161 @@
 			<option value="1.2">大綠臉 1.2</option>
 			<option value="1.3" selected="">墨鏡 1.3</option>
 		</select><br>
+		</div>
 	</div>
-	
-	<div class="Calculator">
-	<button type="button" style="background-color: yellow;" onclick="CalculatorDmg()">計算傷害</button><br>
+	<div class="dmg-table">
+		<table id="dmgTableId">
+			<tr>
+				<th bgcolor="gray">普通傷害</th>
+				<th bgcolor="gray">最低普通傷害</th>
+				<th bgcolor="#FF2D2D">爆擊傷害</th>
+				<th bgcolor="#FF2D2D">最低爆擊傷害</th>
+			</tr>
+			<tr>
+				<td bgcolor="#00FF00">0</td>
+				<td bgcolor="#00FF00">0</td>
+				<td bgcolor="orange">0</td>
+				<td bgcolor="orange">0</td>
+			</tr>
+		</table>
 	</div>
-	<div class="Damage">
-	<span>普通傷害:    </span> <span id="normal_dmg"></span><br>	
-	<span>最低普通傷害:</span> <span id="normal_dmg_min"></span><br>
-	<span>爆擊傷害:    </span> <span id="critical_dmg"></span><br>
-	<span>最低爆擊傷害:</span> <span id="critical_dmg_min"></span><br>
-	</div>
-  
-  <style type="text/css">
-    .Data-Content {        
-	width: auto;        
-	margin-left: 28%;
-    }
-   
-    @media screen and (max-width: 720px) and (orientation: portrait) {
-	.Data-Content {        
+<style type="text/css">
+<!-- 	.Data-Content {        
 		width: auto;        
-		margin-left: 2%;			
+		margin-left: 28%;
 	}
-    }
-
-    .Data-Title {
-        float: left;
+   
+	@media screen and (max-width: 720px) and (orientation: portrait) {
+		.Data-Content {        
+			width: auto;        
+			margin-left: 2%;			
+		}
+    } -->
+	.Data-Content {        
+		line-height: 21px;
+	}
+	
+	.CharStatDiv {	
+		float: left;
 		width: auto;
-    }
+		margin-right: 20px;
+	}
 
-    .Data-Items {
-        float: left;
-	position: relative;
-	left: 10px;
-    }
-	
-    .Data-buff {
-	margin-left: 55%;
-	white-space:nowrap;
-    }
+	.Data-Title {	
+		float: left;
+		width: auto;
+		margin-right: 20px;
+	}
 
-    .AlignRight {
-        text-align: right;
+	.Data-Items {
+		float: left;
+		margin-right: 20px;
+	}
+	
+	.Data-buff {
+		white-space:nowrap;		
+	}
+	
+    .dmg-table {
+		clear:both;		
     }
 	
-    .Calculator {
-	clear:both;
-	width: 30%; 
-	margin-left: 45%;
-	margin-top: 100px;
-    }
-	
-    .Damage {	
-	width: 40%;
-	float: left;
-	text-align: left;
-	margin-left: 32%;
-    }
+	td, th {
+	  border: 1px solid #dddddd;
+	  text-align: left;
+	  padding: 8px;
+	}
 </style>
 <script>
+var CharLevel = 83;
+var CharacterList;
+var star = 4;
+transcendence = [[0, 1000, 2200, 3600, 5300], [0, 750, 1750, 2950, 4450], [0, 500, 1200, 2100, 3500]]
+starGradeStr = ["1 star", "2 star", "3 star", "4 star", "5 star", "Weapon 1", "Weapon 2", "Weapon 3"]
+function updateStarGrade(val)
+{
+	document.getElementById('charStarGradeText').value = val; 
+	document.getElementById('starGrade').value = val; 
+	document.getElementById('StarGradeString').value = starGradeStr[val - 1]; 
+	star = Math.min(5, val) - 1;
+	var idx = document.getElementById('character').value;
+	CharacterStatUpdate(idx);
+}
+function updateCharLevel(val)
+{
+	document.getElementById('charLevelText').value = val; 
+	document.getElementById('charLevel').value = val; 
+	CharLevel = val;
+	var idx = document.getElementById('character').value;
+	CharacterStatUpdate(idx);
+}
+
+function CharacterStatUpdate(idx)
+{
+	var attack = 0;
+	var level = CharLevel;
+	var weaponLevel = 50;
+	if (idx < 0) {
+		return 0;
+	}
+	
+	textarea = document.getElementById('characterStat');
+	textarea.value = '';
+	textarea.value += "Name:" + CharacterList[idx].Name + '\n';
+	attack = (CharacterList[idx].AttackPower100 - CharacterList[idx].AttackPower1) / 99;
+	attack = CharacterList[idx].AttackPower1 + attack * (level - 1);
+	attack = attack * (1 + transcendence[0][star] / 10000);  
+	textarea.value += "Attack:" + (attack).toFixed(2) + '\n';
+	attack = (CharacterList[idx].Weapon.AttackPower100 - CharacterList[idx].Weapon.AttackPower1) / 100;
+	textarea.value += "WeaponAttack:" + (attack * weaponLevel).toFixed(2) + '\n';
+	textarea.value += "CriticalDamage:" + CharacterList[idx].CriticalDamageRate / 100 + '%\n';
+	textarea.value += "StabilityPoint:" + CharacterList[idx].StabilityPoint + '\n';
+	textarea.value += "Equipment Head:" + CharacterList[idx].Equipment[0] + '\n';
+	textarea.value += "Equipment Accessory:" + CharacterList[idx].Equipment[2] + '\n';
+	textarea.value += "EX skill:" ;
+	for(var x = 0; x < CharacterList[idx].Skills[0].Parameters.length; x++){ 
+		if (CharacterList[idx].Skills[0].Parameters[x][4].indexOf("%") > 0)
+		textarea.value += CharacterList[idx].Skills[0].Parameters[x][4] + " ";
+	}
+
+}
+
+function CharacterSelect(e)
+{
+	var idx = e.target.value;
+	CharacterStatUpdate(idx);
+}
+function createCharacterList(CharacterList){ 
+	var select = document.getElementById("character"); 
+	select.addEventListener("click", CharacterSelect);
+	for(var x = 0; x<CharacterList.length; x++){ 
+		var option = document.createElement("option"); 
+		option.setAttribute("value", x);
+		option.appendChild(document.createTextNode(CharacterList[x].Name)); 
+		select.appendChild(option);
+	} 
+} 
+function getJson() {
+	fetch('https://lonqie.github.io/SchaleDB/data/tw/students.min.json')
+	//fetch('http://127.0.0.1:8000/student.json')		
+		.then(result => result.json())
+		.then((output) => {
+			console.log('Output: ', output);
+			//console.log('Name: ', output[0].Name);
+			//console.log('AttackPower1: ', output[0].AttackPower1);
+			//console.log('AttackPower100: ', output[0].AttackPower100);
+			//console.log('CriticalDamageRate: ', output[0].CriticalDamageRate);
+			//console.log('AccuracyPoint: ', output[0].StabilityPoint);	
+			//console.log('AccuracyPoint: ', output[0].Equipment[0]);
+			//console.log('AccuracyPoint: ', output[0].Equipment[2]);
+			//console.log('AccuracyPoint: ', output[0].Weapon.AttackPower1);
+			//console.log('AccuracyPoint: ', output[0].Weapon.AttackPower100);
+			//console.log('AccuracyPoint: ', output[0].Skills[4].Desc);
+			CharacterList = output;
+			createCharacterList(CharacterList);
+			
+		}).catch(err => console.error(err));
+}
 function CalculatorDmg() {
 	var myselect=document.getElementById("weak");
 	var index=myselect.selectedIndex;
@@ -204,11 +325,14 @@ function CalculatorDmg() {
 	var crtDmg = parseInt(crtDmgRate * actualDmg);
 	var crtDmgMin = parseInt(actualDmgMin * crtDmgRate);
 	
-	document.getElementById("normal_dmg").innerHTML = actualDmg;
-	document.getElementById("normal_dmg_min").innerHTML = actualDmgMin;
-	document.getElementById("critical_dmg").innerHTML = crtDmg;
-	document.getElementById("critical_dmg_min").innerHTML = crtDmgMin;
+	document.getElementById("dmgTableId").rows[1].cells[0].innerHTML = actualDmg;
+	document.getElementById("dmgTableId").rows[1].cells[1].innerHTML = actualDmgMin;
+	document.getElementById("dmgTableId").rows[1].cells[2].innerHTML = crtDmg;
+	document.getElementById("dmgTableId").rows[1].cells[3].innerHTML = crtDmgMin;
+}
+window.onload = function() {
+	getJson();
+	CalculatorDmg();
 }
 </script>
-
-</body><grammarly-desktop-integration data-grammarly-shadow-root="true"></grammarly-desktop-integration></html>
+</body></html>
