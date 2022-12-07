@@ -219,7 +219,7 @@ function getSkillText(text, params, level) {
     let regex
 
     regex = /[0-9.]+(?:%|s|秒|초| วินาที)/g
-    result = result.replace(regex, function(match) {return `<strong>${match}</strong>`})
+    <!--result = result.replace(regex, function(match) {return `<strong>${match}</strong>`})-->
 
     for (let i = 1; i <= params.length; i++) {
         while (result.includes(`<?${i}>`)) {
