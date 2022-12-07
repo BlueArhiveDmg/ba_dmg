@@ -16,11 +16,39 @@
 				<output style="width:2em" type="text">Level</output>
 			</div>
 			<div>
-				<input type="range" id="starGrade" value="5" min="1" max="8" 
+				<input type="range" id="starGrade" value="8" min="1" max="8" 
 				oninput="updateStarGrade(this.value);">
-				<input style="width:2em" type="text" id="charStarGradeText" value="5"
+				<input style="width:2em" type="text" id="charStarGradeText" value="8"
 				oninput="updateStarGrade(this.value);">
-				<output style="width:2em" type="text" id="StarGradeString">5 star</output>
+				<output style="width:8em" type="text" id="StarGradeString">Weapon 3</output>
+			</div>
+			<div>
+				<input type="range" id="bond0" value="20" min="1" max="100" 
+				oninput="updatebond(this.value, 0);">
+				<input style="width:3em" type="text" id="bond0text" value="20"
+				oninput="updatebond(this.value, 0);">
+				<output style="width:10em" type="text" id="bond0String">bond0</output>
+			</div>
+			<div>
+				<input type="range" id="bond1" value="20" min="1" max="100" 
+				oninput="updatebond(this.value, 1);">
+				<input style="width:3em" type="text" id="bond1text" value="20"
+				oninput="updatebond(this.value, 1);">
+				<output style="width:10em" type="text" id="bond1String">bond1</output>
+			</div>
+			<div>
+				<input type="range" id="bond2" value="20" min="1" max="100" 
+				oninput="updatebond(this.value, 2);">
+				<input style="width:3em" type="text" id="bond2text" value="20"
+				oninput="updatebond(this.value, 2);">
+				<output style="width:10em" type="text" id="bond2String">bond2</output>
+			</div>
+			<div>
+				<input type="range" id="ExLv" value="5" min="1" max="10" 
+				oninput="updateExLv(this.value);">
+				<input style="width:3em" type="text" id="ExLvtext" value="5"
+				oninput="updateExLv(this.value);">
+				<output style="width:10em" type="text" id="ExLvString">Ex Level</output>
 			</div>
 		</div>
 		<div>
@@ -119,12 +147,14 @@
 				<th bgcolor="gray">最低普通傷害</th>
 				<th bgcolor="#FF2D2D">爆擊傷害</th>
 				<th bgcolor="#FF2D2D">最低爆擊傷害</th>
+				<th>character</th>
 			</tr>
 			<tr>
 				<td bgcolor="#00FF00">0</td>
 				<td bgcolor="#00FF00">0</td>
 				<td bgcolor="orange">0</td>
 				<td bgcolor="orange">0</td>
+				<td>伊織</td>
 			</tr>
 		</table>
 	</div>
@@ -140,6 +170,7 @@
 			margin-left: 2%;			
 		}
     } -->
+
 	.Data-Content {        
 		line-height: 21px;
 	}
@@ -177,8 +208,15 @@
 </style>
 <script>
 class studentStat {
+  name = "伊織"
+  weaponGrade = 8;
   attack = 4144.41;
   WeaponAttack = 422;
+  Weapon2Attack = 0;
+  Weapon2CrtDmg = 0;
+  TsAtk = 0;
+  TsInheritAtk = 0;
+  bondAtk = [];
   EquHead = "Hat";
   EquAcc = "Watch";
   ExSkill = 666;
@@ -190,17 +228,33 @@ class studentStat {
 var student = new studentStat();
 var CharLevel = 83;
 var CharacterList;
+var SummonsList;
 var star = 4;
 var EquAtkKey = { "Hat": 40, "Gloves" : 35, "Shoes": 30};
 var EquCrtDmgKey = { "Hat": 1800, "Gloves": 0, "Shoes": 0, "Watch":2100, "Charm":0, "Necklace":0};
 transcendence = [[0, 1000, 2200, 3600, 5300], [0, 750, 1750, 2950, 4450], [0, 500, 1200, 2100, 3500]]
 starGradeStr = ["1 star", "2 star", "3 star", "4 star", "5 star", "Weapon 1", "Weapon 2", "Weapon 3"]
+function updateExLv(val)
+{
+	$('#ExLv').val(val);
+	$('#ExLvtext').val(val);
+	var idx = document.getElementById('character').value;
+	CharacterStatUpdate(idx);
+}
+function updatebond(val, updatebondIndex)
+{
+	$('#' + 'bond' + updatebondIndex).val(val);
+	$('#' + 'bond' + updatebondIndex + "text").val(val);
+	var idx = document.getElementById('character').value;
+	CharacterStatUpdate(idx);
+}
 function updateStarGrade(val)
 {
 	document.getElementById('charStarGradeText').value = val; 
 	document.getElementById('starGrade').value = val; 
 	document.getElementById('StarGradeString').value = starGradeStr[val - 1]; 
 	star = Math.min(5, val) - 1;
+	student.weaponGrade = $('#starGrade').val()
 	var idx = document.getElementById('character').value;
 	CharacterStatUpdate(idx);
 }
@@ -213,13 +267,41 @@ function updateCharLevel(val)
 	CharacterStatUpdate(idx);
 }
 
-function getSkillText(text, params, level) {
-    
+function getWeapon2Skill(idx) 
+{
+	var text = CharacterList[idx].Skills[4].Desc
+	let result = '';
+	let regex = /\<b:(.+?)\>/g;
+	
+	result = text.match(regex)
+	
+	text = result[0].match('CriticalDamage')
+	if (text) {
+		student.Weapon2CrtDmg = parseFloat(CharacterList[idx].Skills[4].Parameters[0][9]);
+		result = "Weapon2 CriticalDamage: " + CharacterList[idx].Skills[4].Parameters[0][9]
+		return result
+	} else {
+		student.Weapon2CrtDmg = 0;
+	}
+	text = result[0].match('ATK')
+	if (text) {
+		student.Weapon2Attack = parseFloat(CharacterList[idx].Skills[4].Parameters[0][9]);
+		result = "Weapon2 ATK: " + CharacterList[idx].Skills[4].Parameters[0][9]
+		return result
+	} else {
+		student.Weapon2Attack = 0;
+	}
+	result = ''
+	return result
+}
+
+function getSkillText(text, params, level) 
+{
     let result = text
     let regex
 
     regex = /[0-9.]+(?:%|s|秒|초| วินาที)/g
-    <!--result = result.replace(regex, function(match) {return `<strong>${match}</strong>`})-->
+    //result = result.replace(regex, function(match) {return `<strong>${match}</strong>`})
 
     for (let i = 1; i <= params.length; i++) {
         while (result.includes(`<?${i}>`)) {
@@ -229,44 +311,154 @@ function getSkillText(text, params, level) {
 
 	return result
 }
-function CharacterStatUpdate(idx)
+function getStudentbondAtk(idx, bondIdx)
 {
 	var attack = 0;
+
+	for (let i = 1; i < Math.min($('#' + 'bond' + bondIdx).val(), 50); i++) {
+        if (i < 20) {
+            attack += CharacterList[idx].FavorStatValue[Math.floor(i / 5)][0]
+        } else if (i < 50) {
+            attack += CharacterList[idx].FavorStatValue[2 + Math.floor(i / 10)][0]
+        }
+    }
+	
+	return attack
+}
+
+function getStudentIdx(id) 
+{
+	var idx = 9999999;
+	for(var x = 0; x < CharacterList.length; x++){ 
+		if (CharacterList[x].Id == id) {
+			idx = x
+			break
+		}
+	}
+	
+	return idx
+}
+
+function getTotalBondAtk() 
+{
+	var attack = 0;
+	for(var x = 0; x < student.bondAtk.length; x++){ 
+		attack += student.bondAtk[x];
+	}
+	
+	return attack
+}
+
+function CharacterStatUpdate(idx)
+{
+	var exLevel = 5 - 1;
+	var typeTS = 0;
+	var summonIdx = 0;
+	var attack = 0;
 	var level = CharLevel;
-	var weaponLevel = 50;
+	var weaponLevel = (student.weaponGrade >= 6) ? 30 + (student.weaponGrade - 6) * 10 : 0;
 	if (idx < 0) {
 		return 0;
+	}
+	
+	if (CharacterList[idx].TacticRole == "Vehicle") {
+		for(var x = 0; x < SummonsList.length; x++){ 
+			if (SummonsList[x].Id == CharacterList[idx].Summons[0].Id) {
+				typeTS = 1
+				summonIdx = x
+				break
+			}
+		}		
 	}
 
 	textarea = document.getElementById('characterStat');
 	textarea.value = '';
 	textarea.value += "Name:" + CharacterList[idx].Name + '\n';
+	student.name = CharacterList[idx].Name
 	attack = (CharacterList[idx].AttackPower100 - CharacterList[idx].AttackPower1) / 99;
 	attack = CharacterList[idx].AttackPower1 + attack * (level - 1);
 	attack = attack * (1 + transcendence[0][star] / 10000);  
 	textarea.value += "Attack:" + (attack).toFixed(2) + '\n';
-	student.attack = parseFloat((attack).toFixed(2));
-	attack = (CharacterList[idx].Weapon.AttackPower100 - CharacterList[idx].Weapon.AttackPower1) / 99;
-	attack = CharacterList[idx].Weapon.AttackPower1 + (attack).toFixed(2) * (weaponLevel - 1);
+	if (typeTS) {
+		student.attack = parseFloat((attack).toFixed(2));
+		student.TsInheritAtk = parseFloat((CharacterList[idx].Summons[0].InheritCasterAmount[0][exLevel] / 10000)).toFixed(2) * student.attack;
+		attack = (SummonsList[summonIdx].AttackPower100 - SummonsList[summonIdx].AttackPower1) / 99;
+		attack = SummonsList[summonIdx].AttackPower1 + attack * (level - 1);
+		student.TsAtk = parseFloat((attack).toFixed(2));
+		textarea.value += "TS Attack:" + (attack).toFixed(2) + '\n';
+	} else {
+		student.TsAtk = 0;
+		student.attack = parseFloat((attack).toFixed(2));
+	}
+	attack = 0;
+	if (weaponLevel > 0) {
+		attack = (CharacterList[idx].Weapon.AttackPower100 - CharacterList[idx].Weapon.AttackPower1) / 99;
+		attack = CharacterList[idx].Weapon.AttackPower1 + (attack).toFixed(2) * (weaponLevel - 1);		
+	}
 	student.WeaponAttack = parseFloat((attack).toFixed(2));
 	textarea.value += "WeaponAttack:" + (attack).toFixed(2) + '\n';
-	textarea.value += "CriticalDamage:" + CharacterList[idx].CriticalDamageRate / 100 + '%\n';
-	student.CriticalDamage = CharacterList[idx].CriticalDamageRate / 100;
-	textarea.value += "StabilityPoint:" + CharacterList[idx].StabilityPoint + '\n';
-	student.Stability = CharacterList[idx].StabilityPoint;
-	textarea.value += "Equipment Head:" + CharacterList[idx].Equipment[0] + '\n';
-	student.EquHead = CharacterList[idx].Equipment[0];
-	textarea.value += "Equipment Accessory:" + CharacterList[idx].Equipment[2] + '\n';
-	student.EquAcc = CharacterList[idx].Equipment[2];
-	textarea.value += "EX skill:" + "\n" ;
-	textarea.value += getSkillText(CharacterList[idx].Skills[0].Desc, CharacterList[idx].Skills[0].Parameters, 4);
-	student.ExSkill = parseFloat(CharacterList[idx].Skills[0].Parameters[0][4].replace("%",""));
 	
-	document.getElementById("EquAtk").value = EquAtkKey[student.EquHead];
-	document.getElementById("CrtDmgEqu").value = EquCrtDmgKey[student.EquHead] + EquCrtDmgKey[student.EquAcc];
-	document.getElementById("Atk").value = ((student.attack + student.WeaponAttack) * (1 + document.getElementById("EquAtk").value / 100)).toFixed(2);
-	document.getElementById("SkillDmg").value = student.ExSkill;
-	document.getElementById("Stable").value = student.Stability;
+	student.bondAtk = []
+	$('#' + 'bond' + '0' + "String").val(CharacterList[idx].Name);
+	attack = getStudentbondAtk(idx, 0);
+	textarea.value += "BondAttack: " + attack + '\n'
+	student.bondAtk.push(attack);
+	for(var x = 1; x < 3; x++){
+		if (CharacterList[idx].FavorAlts.length < (x)) {
+			$('#' + 'bond' + x).prop("disabled", true );
+			$('#' + 'bond' + x + "text").prop("disabled", true );
+			$('#' + 'bond' + x + "String").val("None");
+		} else {
+			favorAltIdx = getStudentIdx(CharacterList[idx].FavorAlts[x-1])
+			attack = getStudentbondAtk(favorAltIdx, x)
+			student.bondAtk.push(attack);
+			textarea.value += CharacterList[favorAltIdx].Name + "BondAttack: " + attack + '\n'
+			$('#' + 'bond' + x).prop("disabled", false );
+			$('#' + 'bond' + x + "text").prop("disabled", false );
+			$('#' + 'bond' + x + "String").val(CharacterList[favorAltIdx].Name);
+		}		
+	}
+	
+	textarea.value += "CriticalDamage:" + CharacterList[idx].CriticalDamageRate / 100 + '%\n';
+	if (typeTS) {
+		student.CriticalDamage = SummonsList[summonIdx].CriticalDamageRate / 100;
+	} else {
+		student.CriticalDamage = CharacterList[idx].CriticalDamageRate / 100;
+	}
+	textarea.value += getWeapon2Skill(idx) + '\n';
+	textarea.value += "StabilityPoint:" + CharacterList[idx].StabilityPoint + '\n';
+	if (typeTS) {
+		student.Stability = SummonsList[summonIdx].StabilityPoint;
+	} else {
+		student.Stability = CharacterList[idx].StabilityPoint;
+	}
+	textarea.value += "Equipment: ";
+
+	for(var x = 0; x < CharacterList[idx].Equipment.length; x++){ 
+		textarea.value += CharacterList[idx].Equipment[x] + " "
+	}
+	textarea.value += '\n';
+	student.EquHead = CharacterList[idx].Equipment[0];
+	student.EquAcc = CharacterList[idx].Equipment[2];
+	textarea.value += "EX skill:" + "\n";
+	textarea.value += getSkillText(CharacterList[idx].Skills[0].Desc, CharacterList[idx].Skills[0].Parameters, $('#ExLv').val() - 1);
+	if (typeTS) {
+		student.ExSkill = parseFloat(CharacterList[idx].Skills[0].Parameters[1][$('#ExLv').val() - 1].replace("%",""));
+	} else {
+		student.ExSkill = parseFloat(CharacterList[idx].Skills[0].Parameters[0][$('#ExLv').val() - 1].replace("%",""));
+	}
+	
+	$('#EquAtk').val(EquAtkKey[student.EquHead])
+	$('#CrtDmgEqu').val(EquCrtDmgKey[student.EquHead] + EquCrtDmgKey[student.EquAcc] + student.Weapon2CrtDmg)
+	if (typeTS) {
+		$('#Atk').val((student.TsAtk + student.TsInheritAtk) * (1 + ($('#EquAtk').val() / 100)))
+	} else {
+		attack = student.attack + student.WeaponAttack + student.Weapon2Attack
+		attack += getTotalBondAtk()
+		$('#Atk').val(((attack) * (1 + ($('#EquAtk').val() / 100))).toFixed(2))
+	}
+	$('#SkillDmg').val(student.ExSkill)
+	$('#Stable').val(student.Stability)
 	CalculatorDmg();
 }
 
@@ -286,27 +478,18 @@ function createCharacterList(CharacterList){
 	} 
 } 
 function getJson() {
-	fetch('https://lonqie.github.io/SchaleDB/data/tw/students.min.json')
-	//fetch('http://127.0.0.1:8000/student.json')		
+	fetch('https://lonqie.github.io/SchaleDB/data/summons.json')
 		.then(result => result.json())
 		.then((output) => {
-			console.log('Output: ', output);
-			//console.log('Name: ', output[0].Name);
-			//console.log('AttackPower1: ', output[0].AttackPower1);
-			//console.log('AttackPower100: ', output[0].AttackPower100);
-			//console.log('CriticalDamageRate: ', output[0].CriticalDamageRate);
-			//console.log('AccuracyPoint: ', output[0].StabilityPoint);	
-			//console.log('AccuracyPoint: ', output[0].Equipment[0]);
-			//console.log('AccuracyPoint: ', output[0].Equipment[2]);
-			//console.log('AccuracyPoint: ', output[0].Weapon.AttackPower1);
-			//console.log('AccuracyPoint: ', output[0].Weapon.AttackPower100);
-			//console.log('AccuracyPoint: ', output[0].Skills[4].Desc);
+			SummonsList = output;
+	}).catch(err => console.error(err));
+	fetch('https://lonqie.github.io/SchaleDB/data/tw/students.min.json')
+		.then(result => result.json())
+		.then((output) => {
 			CharacterList = output;
 			createCharacterList(CharacterList);
 			
 	}).catch(err => console.error(err));
-	
-	//fetch('https://lonqie.github.io/SchaleDB/data/summons.json')
 }
 function CalculatorDmg() {
 	var myselect=document.getElementById("weak");
@@ -372,6 +555,7 @@ function CalculatorDmg() {
 	document.getElementById("dmgTableId").rows[1].cells[1].innerHTML = actualDmgMin;
 	document.getElementById("dmgTableId").rows[1].cells[2].innerHTML = crtDmg;
 	document.getElementById("dmgTableId").rows[1].cells[3].innerHTML = crtDmgMin;
+	document.getElementById("dmgTableId").rows[1].cells[4].innerHTML = student.name;
 }
 window.onload = function() {
 	getJson();
