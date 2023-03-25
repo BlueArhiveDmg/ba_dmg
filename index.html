@@ -478,12 +478,12 @@ function createCharacterList(CharacterList){
 	} 
 } 
 function getJson() {
-	fetch('https://lonqie.github.io/SchaleDB/data/summons.json')
+	fetch('https://schale.gg/data/summons.json')
 		.then(result => result.json())
 		.then((output) => {
 			SummonsList = output;
 	}).catch(err => console.error(err));
-	fetch('https://lonqie.github.io/SchaleDB/data/tw/students.min.json')
+	fetch('https://schale.gg/data/tw/students.min.json')
 		.then(result => result.json())
 		.then((output) => {
 			CharacterList = output;
