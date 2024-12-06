@@ -470,10 +470,10 @@ function CharacterSelect(e)
 function createCharacterList(CharacterList){ 
 	var select = document.getElementById("character"); 
 	select.addEventListener("change", CharacterSelect);
-	for(var x = 0; x<CharacterList.length; x++){ 
+	for (var key in CharacterList) {
 		var option = document.createElement("option"); 
-		option.setAttribute("value", x);
-		option.appendChild(document.createTextNode(CharacterList[x].Name)); 
+		option.setAttribute("value", CharacterList[key].Id);
+		option.appendChild(document.createTextNode(CharacterList[key].Name)); 
 		select.appendChild(option);
 	} 
 } 
